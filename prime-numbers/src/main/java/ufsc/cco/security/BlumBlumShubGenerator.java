@@ -43,6 +43,7 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
     public BigInteger generate() {
         BitSet result = new BitSet(bitLength);
 
+        // TODO: Gerar uma seed para cada execução é o correto? Sim, porque se usar a mesma, os primeiros números serão sempre iguais
         BigInteger seed = new BigInteger(bitLength, random);
         // Garantindo que seed não compartilhe fatores primos com M
         while (seed.mod(m).equals(BigInteger.ZERO)) {
