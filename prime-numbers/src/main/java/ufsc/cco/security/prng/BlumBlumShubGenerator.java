@@ -1,4 +1,4 @@
-package ufsc.cco.security;
+package ufsc.cco.security.prng;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
