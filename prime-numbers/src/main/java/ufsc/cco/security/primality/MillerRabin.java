@@ -7,7 +7,7 @@ import java.util.Random;
 
 
 // Usado no método BigInteger#passesMillerRabin
-public class MillerRabin implements PrimalityTester {
+public class MillerRabin extends AbstractPrimalityTester {
 
     private static final SecureRandom random = new SecureRandom();
 
@@ -16,18 +16,7 @@ public class MillerRabin implements PrimalityTester {
     }
 
     @Override
-    public Boolean test(BigInteger possiblePrime) {
-        return test(possiblePrime, 1);
-    }
-
-    public Boolean test(BigInteger possiblePrime, int iterations) {
-        // Se for 2 ou 3 é primo
-        if (possiblePrime.equals(BigInteger.TWO) || possiblePrime.equals(BigInteger.valueOf(3)))
-            return true;
-        // Se for menor que 2 ou par, não é primo
-        if (possiblePrime.compareTo(BigInteger.TWO) < 0 || possiblePrime.mod(BigInteger.TWO).equals(BigInteger.ZERO))
-            return false;
-
+    protected Boolean isProbablyPrime(BigInteger possiblePrime, int iterations) {
         // 1 - Escreva n - 1 = 2^k*m
         FactoringResult result = factorizeByTwoPower(possiblePrime.subtract(BigInteger.ONE));
         System.out.println("Fatoração de n - 1: k = " + result.k + ", m = " + result.m);
