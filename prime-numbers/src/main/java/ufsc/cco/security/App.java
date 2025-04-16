@@ -47,6 +47,7 @@ public class App {
         BigInteger prime = null;
         while(!isPrime) {
             prime = laggedFiboGenerator.generate();
+            // isPrime = solovay.test(prime, 4);
             isPrime = solovay.test(prime, 4);
         }
         Long endTime = System.currentTimeMillis();
