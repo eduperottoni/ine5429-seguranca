@@ -1,8 +1,11 @@
 package ufsc.cco.security.primality;
 
 import java.math.BigInteger;
+import java.security.SecureRandom;
 
 public abstract class AbstractPrimalityTester implements PrimalityTester {
+
+    protected static final SecureRandom random = new SecureRandom();
 
     private Boolean testBaseCases(BigInteger possiblePrime) {
         // Se for 2 ou 3 é primo
@@ -16,10 +19,12 @@ public abstract class AbstractPrimalityTester implements PrimalityTester {
     }
 
     public Boolean test(BigInteger n) {
+        System.out.println("Testando para o possível primo " + n);
         return test(n, 1);
     }
 
     public Boolean test(BigInteger n, int iterations) {
+        System.out.println("Testando para o possível primo " + n);
         Boolean baseCasesResult = testBaseCases(n);
 
         return baseCasesResult != null ? baseCasesResult : isProbablyPrime(n, iterations);

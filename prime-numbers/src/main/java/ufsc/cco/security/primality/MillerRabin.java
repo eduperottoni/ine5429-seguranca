@@ -1,15 +1,11 @@
 package ufsc.cco.security.primality;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.HashSet;
-import java.util.Random;
 
 
 // Usado no método BigInteger#passesMillerRabin
 public class MillerRabin extends AbstractPrimalityTester {
-
-    private static final SecureRandom random = new SecureRandom();
 
     public MillerRabin() {
         // empty
@@ -19,7 +15,7 @@ public class MillerRabin extends AbstractPrimalityTester {
     protected Boolean isProbablyPrime(BigInteger possiblePrime, int iterations) {
         // 1 - Escreva n - 1 = 2^k*m
         FactoringResult result = factorizeByTwoPower(possiblePrime.subtract(BigInteger.ONE));
-        System.out.println("Fatoração de n - 1: k = " + result.k + ", m = " + result.m);
+        // System.out.println("Fatoração de n - 1: k = " + result.k + ", m = " + result.m);
 
         HashSet<BigInteger> testedAs = new HashSet<>();
         for (int it = 0; it < iterations; it++) {
@@ -30,7 +26,7 @@ public class MillerRabin extends AbstractPrimalityTester {
             } while((a.compareTo(BigInteger.TWO) < 0 || a.compareTo(possiblePrime.subtract(BigInteger.TWO)) > 0) || testedAs.contains(a));
             
             testedAs.add(a);
-            System.out.println("Testando com a = " + a);
+            // System.out.println("Testando com a = " + a);
             // a^m ≡ 1 (mod n) ?
             BigInteger aPowMModN = a.modPow(result.m, possiblePrime);
             if (aPowMModN.equals(BigInteger.ONE) || aPowMModN.equals(possiblePrime.subtract(BigInteger.ONE)))
@@ -47,9 +43,9 @@ public class MillerRabin extends AbstractPrimalityTester {
                 aPowMModN = aPowMModN.modPow(BigInteger.TWO, possiblePrime);
             }
 
-            if (continueTesting) continue;
+            if (continueTesting) continue;  
 
-            System.out.println("FALHOU! a^m mod n = " + aPowMModN);
+            // System.out.println("FALHOU! a^m mod n = " + aPowMModN);
             return false;
         }
 

@@ -53,7 +53,7 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
         // Feito sem usar paralelismo
         // Para usar paralelismo, usa-se xi = x0^(2^i mod(a(M))) (mod M)
         // Em que a(M) é o mmc de (p-1) e (q-1)
-        BigInteger currentX = seed.mod(m);
+        BigInteger currentX = seed.mod(m);                          
         for (int i = 0; i < bitLength; i++) {
             currentX = currentX.modPow(BigInteger.TWO, m);
 
