@@ -10,11 +10,11 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
     private static final BigInteger THREE = BigInteger.valueOf(3);
     private static final BigInteger FOUR = BigInteger.valueOf(4);
 
-    private BigInteger m;
-    private Random random;
-    private int bitLength;
+    protected BigInteger m;
+    protected Random random;
+    protected int bitLength;
 
-    private BigInteger getPrimeFactorForM(int bitLength, Random random) {
+    protected BigInteger getPrimeFactorForM(int bitLength, Random random) {
         BigInteger prime;
         do {
             prime = new BigInteger(bitLength, 100, random);
@@ -22,7 +22,7 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
         return prime;
     }
 
-    private BigInteger getM(int bitLength, Random random) {
+    protected BigInteger getM(int bitLength, Random random) {
         BigInteger p = getPrimeFactorForM(bitLength / 2, random);
         BigInteger q = getPrimeFactorForM(bitLength / 2, random);
 
@@ -39,16 +39,21 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
         this.m = getM(bitLength, random);
     }
 
-    @Override
-    public BigInteger generate() {
-        BitSet result = new BitSet(bitLength);
-
-        // TODO: Gerar uma seed para cada execução é o correto? Sim, porque se usar a mesma, os primeiros números serão sempre iguais
+    public BigInteger generateSeed() {
+        // TODO: Gerar uma seed para cada execução é o correto? Sim, porque se usar a mesma,
+        // os primeiros números serão sempre iguais
         BigInteger seed = new BigInteger(bitLength, random);
         // Garantindo que seed não compartilhe fatores primos com M
         while (seed.mod(m).equals(BigInteger.ZERO)) {
             seed = new BigInteger(bitLength, random);
         }
+        return seed;
+    }
+
+    @Override
+    public BigInteger generate() {
+        BitSet result = new BitSet(bitLength);
+        BigInteger seed = generateSeed();
 
         // Feito sem usar paralelismo
         // Para usar paralelismo, usa-se xi = x0^(2^i mod(a(M))) (mod M)
