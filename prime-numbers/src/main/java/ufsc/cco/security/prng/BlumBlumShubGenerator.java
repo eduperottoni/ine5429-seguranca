@@ -13,6 +13,7 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
     protected BigInteger m;
     protected Random random;
     protected int bitLength;
+    protected BigInteger seed;
 
     protected BigInteger getPrimeFactorForM(int bitLength, Random random) {
         BigInteger prime;
@@ -37,11 +38,13 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
         this.bitLength = bitLength;
         this.random = new SecureRandom();
         this.m = getM(bitLength, random);
+        this.seed = generateSeed().mod(m);
     }
 
     public BigInteger generateSeed() {
         // TODO: Gerar uma seed para cada execução é o correto? Sim, porque se usar a mesma,
         // os primeiros números serão sempre iguais
+        // FIXME: NÃO! PODEMOS SÓ SEGUIR SUBSITUINDO A SEED PARA O PRÓXIMO VALOR
         BigInteger seed = new BigInteger(bitLength, random);
         // Garantindo que seed não compartilhe fatores primos com M
         while (seed.mod(m).equals(BigInteger.ZERO)) {
@@ -53,12 +56,11 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
     @Override
     public BigInteger generate() {
         BitSet result = new BitSet(bitLength);
-        BigInteger seed = generateSeed();
 
         // Feito sem usar paralelismo
         // Para usar paralelismo, usa-se xi = x0^(2^i mod(a(M))) (mod M)
         // Em que a(M) é o mmc de (p-1) e (q-1)
-        BigInteger currentX = seed.mod(m);                          
+        BigInteger currentX = seed;
         for (int i = 0; i < bitLength; i++) {
             currentX = currentX.modPow(BigInteger.TWO, m);
 
@@ -68,7 +70,8 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
                 result.clear(i);
             }
         }
-
+        seed = currentX;
+        
         return new BigInteger(result.toByteArray());
     }
 

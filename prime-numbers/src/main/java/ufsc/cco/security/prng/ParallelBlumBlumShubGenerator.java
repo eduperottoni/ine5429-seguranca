@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 public class ParallelBlumBlumShubGenerator extends BlumBlumShubGenerator {
@@ -39,50 +40,49 @@ public class ParallelBlumBlumShubGenerator extends BlumBlumShubGenerator {
         int availableCores = Runtime.getRuntime().availableProcessors();
         int bitsPerThread = bitLength / availableCores;
         int remainingBits = bitLength % availableCores;
-        BigInteger seed = generateSeed();
 
         ExecutorService executor = Executors.newFixedThreadPool(availableCores);
-        List<Future<BitSet>> futures = new ArrayList<>();
-        BigInteger currentX = seed.mod(m);
+        BitSet sharedBitSet = new BitSet(bitLength);
+        List<Future<Void>> futures = new ArrayList<>();
         
         // Feito usando paralelismo
         // Para usar paralelismo, usa-se xi = x0^(2^i mod(a(M))) (mod M)
         // Em que a(M) é o mmc de (p-1) e (q-1)
         for (int i = 0; i < availableCores; i++) {
             final int startBit = i * bitsPerThread;
-            final int endBit = (i == availableCores - 1) ? (startBit + bitsPerThread + remainingBits) : (startBit + bitsPerThread);
-            final BigInteger startX = currentX;
-
+            final int endBit = (i == availableCores - 1)
+                ? (startBit + bitsPerThread + remainingBits)
+                : (startBit + bitsPerThread);
+    
             futures.add(executor.submit(() -> {
-                BitSet bitSet = new BitSet(bitLength);
-                BigInteger x = startX;
+                // Each thread computes its own startX
+                BigInteger exp = BigInteger.TWO.modPow(BigInteger.valueOf(startBit), aM);
+                BigInteger x = seed.modPow(exp, m);
+    
                 for (int j = startBit; j < endBit; j++) {
-                    x = x.modPow(BigInteger.TWO, m);
+                    x = x.modPow(BigInteger.TWO, m); // x = x^2 mod m
                     if (x.testBit(0)) {
-                        bitSet.set(j);
+                        synchronized (sharedBitSet) {
+                            sharedBitSet.set(j);
+                        }
                     }
                 }
-                return bitSet;
+                return null;
             }));
-
-            // Update currentX = x^(2^(bitsPerThread)) mod M for next thread start
-            BigInteger powExp = BigInteger.TWO.pow(bitsPerThread);
-            currentX = currentX.modPow(powExp, m);
         }
-
+    
         executor.shutdown();
-
-        // Combine results
-        BitSet finalResult = new BitSet(bitLength);
-        for (Future<BitSet> future : futures) {
-            try {
-                finalResult.or(future.get());
-            } catch (Exception e) {
-                throw new RuntimeException("Error in parallel bit generation", e);
-            }
+        try {
+            executor.awaitTermination(1, TimeUnit.MINUTES); // ensure all threads finish
+        } catch (InterruptedException e) {
+            System.err.println("Erro ao executar Blum Blum Shub Paralelo");
+            e.printStackTrace();
         }
 
-        return new BigInteger(finalResult.toByteArray());
+        BigInteger exp = BigInteger.TWO.modPow(BigInteger.valueOf(bitLength), aM);
+        seed = seed.modPow(exp, m);
+
+        return new BigInteger(sharedBitSet.toByteArray());
     }
     
 }
