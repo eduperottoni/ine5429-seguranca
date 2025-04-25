@@ -16,7 +16,6 @@ public class PrngTester {
             try {
                 generator = clazz.getDeclaredConstructor(int.class).newInstance(i);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 return;
             }
