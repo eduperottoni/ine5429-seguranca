@@ -11,7 +11,8 @@ public class LaggedFibbonacciGenerator implements PseudoNumberGenerator {
     private final Random random = new SecureRandom();
     private final int j;
     private final int k;
-    private int jIndexForNavigation;
+    private int currentIndex;
+    private int bufferSize;
 
 
     public LaggedFibbonacciGenerator(int j, int k,  int bitLength) {
@@ -22,27 +23,29 @@ public class LaggedFibbonacciGenerator implements PseudoNumberGenerator {
         this.j = j;
         this.k = k;
         this.m = BigInteger.ONE.shiftLeft(bitLength);
-        this.jIndexForNavigation = j - 1;
+        this.currentIndex = 0;
         
         // Initialize the buffer with random values
         this.buffer = new BigInteger[k];
         for (int i = 0; i < k; i++) {
             buffer[i] = new BigInteger(bitLength, random);
         }
+        this.bufferSize = buffer.length;
     }
 
     public LaggedFibbonacciGenerator(int bitLength) {
-        this(274, 607, bitLength);
+        this(273, 607, bitLength);
     }
 
     @Override
     public BigInteger generate() {
-        int kIndexForNavigation = (jIndexForNavigation + k - j) % k;
+        int indexJ = (currentIndex - j + bufferSize) % bufferSize;
+        int indexK = (currentIndex - k + bufferSize) % bufferSize;
 
-        BigInteger newRandom = applyOperation(buffer[jIndexForNavigation], buffer[kIndexForNavigation]).mod(m);
-        buffer[kIndexForNavigation] = newRandom;
+        BigInteger newRandom = applyOperation(buffer[indexJ], buffer[indexK]).mod(m);
+        buffer[currentIndex] = newRandom;
 
-        jIndexForNavigation = (jIndexForNavigation + 1) % k;
+        currentIndex = (currentIndex + 1) % bufferSize;
 
         return newRandom;
     }

@@ -9,6 +9,8 @@ public class PrngTester {
 
     public static <T extends PseudoNumberGenerator> void generateRandomNumbers(Class<T> clazz, int numbersToGenerate, List<Integer> bitLenghts, boolean debug) {
         System.out.println("Vamos começar os experimentos para o PRNG " + clazz.getSimpleName() + "!");
+        String graphicCoords = "";
+        int bitLenghtsCounter = 1;
         for (int i: bitLenghts) {
             PseudoNumberGenerator generator;
             try {
@@ -29,8 +31,11 @@ public class PrngTester {
             }
             Long endTime = System.currentTimeMillis();
             System.out.println("Tempo de execução para " + numbersToGenerate + " números de " + i + " bits : " + (endTime - startTime) + " ms");
-            System.out.println("  Média : " + (endTime - startTime) / (long) numbersToGenerate + " ms");
+            System.out.println("  Média : " + (endTime - startTime) / (double) numbersToGenerate + " ms");
+            graphicCoords += "(" + bitLenghtsCounter++ + "," + (endTime - startTime) / (double) numbersToGenerate + ")" + "\n";
         }
+
+        System.out.println(graphicCoords);
     }
 
 }
