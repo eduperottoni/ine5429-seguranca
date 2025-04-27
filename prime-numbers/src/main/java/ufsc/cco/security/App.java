@@ -28,7 +28,7 @@ public class App {
 
 
         // PRIMALITY TESTING
-        PtTester.findPrimeNumbers(LaggedFibbonacciGenerator.class, MillerRabin.class, 5, bitLenghts, false);
+        PtTester.findPrimeNumbers(BlumBlumShubGenerator.class, MillerRabin.class, 5, bitLenghts, 10, false);
         // PtTester.findPrimeNumbers(LaggedFibbonacciGenerator.class, SolovayStrassem.class, 5, bitLenghts, false);
         // PtTester.findPrimeNumbers(BlumBlumShubGenerator.class, MillerRabin.class, 5, bitLenghts, false);
         // PtTester.findPrimeNumbers(BlumBlumShubGenerator.class, SolovayStrassem.class, 5, bitLenghts, false);

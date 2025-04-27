@@ -10,7 +10,7 @@ import ufsc.cco.security.prng.PseudoNumberGenerator;
 
 public class PtTester {
 
-    public static <T extends PseudoNumberGenerator, P extends PrimalityTester> void findPrimeNumbers(Class<T> pseudoNumberGenClazz, Class<P> primalityTesterClazz , int numbersToGenerate, List<Integer> bitLenghts, boolean debug) {
+    public static <T extends PseudoNumberGenerator, P extends PrimalityTester> void findPrimeNumbers(Class<T> pseudoNumberGenClazz, Class<P> primalityTesterClazz , int numbersToGenerate, List<Integer> bitLenghts, int iterations, boolean debug) {
     
         Map<Integer, Long> map = new HashMap<>();
             for (int i : bitLenghts) {
@@ -34,8 +34,7 @@ public class PtTester {
                     Long startTime = System.currentTimeMillis();
                     while(!isPrime) {
                         prime = generator.generate();
-                        // isPrime = solovay.test(prime, 4);
-                        isPrime = tester.test(prime, 4);
+                        isPrime = tester.test(prime, iterations);
                     }
                     Long endTime = System.currentTimeMillis();
                     System.out.println("Encontramos um primo com "+ i + " bits : " + prime + " | " + (endTime - startTime) + " ms");

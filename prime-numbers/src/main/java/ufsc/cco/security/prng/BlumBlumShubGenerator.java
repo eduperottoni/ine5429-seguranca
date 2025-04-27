@@ -19,7 +19,7 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
         BigInteger prime;
         do {
             prime = new BigInteger(bitLength, 100, random);
-        } while (prime.mod(FOUR).equals(THREE));
+        } while (!prime.mod(FOUR).equals(THREE));
         return prime;
     }
 
@@ -47,7 +47,8 @@ public class BlumBlumShubGenerator implements PseudoNumberGenerator {
         // FIXME: NÃO! PODEMOS SÓ SEGUIR SUBSITUINDO A SEED PARA O PRÓXIMO VALOR
         BigInteger seed = new BigInteger(bitLength, random);
         // Garantindo que seed não compartilhe fatores primos com M
-        while (seed.mod(m).equals(BigInteger.ZERO)) {
+        // Isso garante que nenhuma informação é 
+        while (!seed.gcd(m).equals(BigInteger.ONE)) {
             seed = new BigInteger(bitLength, random);
         }
         return seed;
