@@ -4,7 +4,9 @@ import java.math.BigInteger;
 import java.util.HashSet;
 
 
-// Usado no método BigInteger#passesMillerRabin
+/**
+ * Implementa o teste de primalidade de Miller-Rabin
+ */
 public class MillerRabin extends AbstractPrimalityTester {
 
     public MillerRabin() {
@@ -27,14 +29,15 @@ public class MillerRabin extends AbstractPrimalityTester {
             
             testedAs.add(a);
             // System.out.println("Testando com a = " + a);
-            // a^m ≡ 1 (mod n) ?
+
+            // 3 - a^m ≡ 1 (mod n) ?
             BigInteger aPowMModN = a.modPow(result.m, possiblePrime);
             if (aPowMModN.equals(BigInteger.ONE) || aPowMModN.equals(possiblePrime.subtract(BigInteger.ONE)))
                 continue;
             
             Boolean continueTesting = false;
             for (int i = 0; i < result.k - 1; i++) {
-                // a^(2^i*m) = -1 (mod n) ?
+                // 4 - a^(2^i*m) = -1 (mod n) ?
                 // Testamos antes porque já temos o resultado de a^(2^i*m) mod n
                 if (aPowMModN.equals(possiblePrime.subtract(BigInteger.ONE))) {
                     continueTesting = true;
@@ -45,7 +48,6 @@ public class MillerRabin extends AbstractPrimalityTester {
 
             if (continueTesting) continue;  
 
-            // System.out.println("FALHOU! a^m mod n = " + aPowMModN);
             return false;
         }
 
@@ -53,6 +55,12 @@ public class MillerRabin extends AbstractPrimalityTester {
     }
 
 
+    /**
+     * Descobre k e m tais que n = 2^k*m, com n par e m ímpar
+     * 
+     * @param n número par
+     * @return {@link FactoringResult}, descrevendo k e m em n = 2^k*m
+     */
     private FactoringResult factorizeByTwoPower(BigInteger n) {
         BigInteger m = n;
         int k = 0;
@@ -65,6 +73,9 @@ public class MillerRabin extends AbstractPrimalityTester {
         return new FactoringResult(k, m);
     }
 
+    /**
+     * Classe auxiliar apenas para guardar os valores de k e m da fatoração
+     */
     private class FactoringResult {
         public int k;
         public BigInteger m;

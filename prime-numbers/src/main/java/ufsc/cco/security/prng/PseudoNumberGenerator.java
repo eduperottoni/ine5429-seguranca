@@ -2,9 +2,12 @@ package ufsc.cco.security.prng;
 
 import java.math.BigInteger;
 
+/**
+ * Interface a ser implementada por geradores de números pseudo-aleatórios
+ */
 public interface PseudoNumberGenerator {
     /*
-     * Generates a pseudo-random number of the specified bit length.
+     * Gera o próximo número pseudo-aleatório
      */
     public BigInteger generate();
 }
