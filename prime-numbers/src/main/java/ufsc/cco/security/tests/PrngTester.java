@@ -1,4 +1,4 @@
-package ufsc.cco.security;
+package ufsc.cco.security.tests;
 
 import java.math.BigInteger;
 import java.util.List;

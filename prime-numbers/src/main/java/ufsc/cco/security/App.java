@@ -2,10 +2,14 @@ package ufsc.cco.security;
 
 import ufsc.cco.security.prng.LaggedFibbonacciGenerator;
 import ufsc.cco.security.prng.ParallelBlumBlumShubGenerator;
+import ufsc.cco.security.tests.PtTester;
 import ufsc.cco.security.prng.BlumBlumShubGenerator;
 
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ufsc.cco.security.primality.MillerRabin;
 import ufsc.cco.security.primality.SolovayStrassem;
@@ -13,13 +17,26 @@ import ufsc.cco.security.primality.SolovayStrassem;
 
 public class App {
 
-    // TODO: Implementar exponenciação modular:
-    // Não precisa implementar, apenas referenciar a documentação, que tem um método já otimizado para fazer exponenciação modular
+    final static Map<Integer, BigInteger> primeNumbers = new HashMap<>();
+
+    static {
+        primeNumbers.put(40, new BigInteger("541611720883"));
+        primeNumbers.put(56, new BigInteger("35254009342424959"));
+        primeNumbers.put(80, new BigInteger("425933205695844549266251"));
+        primeNumbers.put(128, new BigInteger("14175887228567004255797022762030741343"));
+        primeNumbers.put(168, new BigInteger("153950059734524167913946056105936930651264365939499"));
+        primeNumbers.put(224, new BigInteger("11136377535236576224497155498604892964534706774394639124229414938287"));
+        primeNumbers.put(256, new BigInteger("10418136397743641104566310796781817808115827149380515924170107916674694102211"));
+        primeNumbers.put(512, new BigInteger("2411765023976420562242500539160842468811673739611657789092412400369747629219890724291374085429247366203888630160083595613079763597776282406245980452957179"));
+        primeNumbers.put(1024, new BigInteger("18507172904720883661733588208130976912752522334624916802436068634717541053639150751547750982117505661576423757235374135045491202377388954154461792292993340551954356968338180208932991292598429267340673165632128675279759909685322310802608488190144293369478534868061179973884454166466545995013935314404056911291"));
+        primeNumbers.put(2048, new BigInteger("2305182001350697832289857018627664360087748685265918021820341444191877560625766905159820621739148637211583831404846034294275359809889938633545918282316654841027247005677984204423110170149874619369869954674172924899542711244047104663230727208701254850909081323410120840325461159325025161709838501761154885861078065715824193786147071954247270566013306404277425038422839670016176048760062544461624195133374198045409368055253336999824782767314170139710923118907340982569749617189279296607652681396183649478037811231717399363957980703999796231861501413979753452455289362910263394687254322064267687073868027165307701680551"));
+        primeNumbers.put(4096, new BigInteger("352362365890463567669412588355838261571770983368600706492254805796497998895445025498288747676690649579172072846262533979315946859912689834230088231656335644258577718010275113243473589913330325538324102072656906526481025761002039096665619402965739312973751329767772830985304434708626554371592341776427240777010387529754243879648925919977031280826514344662515899039821051714295357166263254818916472021876877004234973494752422795397895693916964838532743227766269216187435942968590118067851002466222461204916440657021190223575668940004422807970806898471382278466406386875556726741378893305366306540192412363637236286275716646152021727421939260577315568050976795545508203061978321808455035506360990072239419487936582975557754128966538490982893761540362732704615641082922213184168225508905597726638846311630430320180857278438735184759708793109677245498707864452632358773249367928356517741468485505052529387046939636109577305427537297278570913274507421582086004282579297857213282340842231486961626902725258428592132721220029685535905303894221672240643529943246554439170767113964800032651711774940489502337609385255191728687931650269887345956502656322693003944507681218327194218842615705880127105427637849418590672081532070744395709219472527"));
+    }
+
     public static void main(String[] args) {
         // System.out.println("Vamos começar os experimentos!");
         List<Integer> bitLenghts = Arrays.asList(40, 56, 80, 128, 168, 224, 256, 512, 1024, 2048, 4096);
         int NUMBERS_TO_GENERATE = 1000;
-        
         
         // PRNG TESTING
         // PrngTester.generateRandomNumbers(BlumBlumShubGenerator.class, NUMBERS_TO_GENERATE, bitLenghts, false);
@@ -28,13 +45,17 @@ public class App {
 
 
         // PRIMALITY TESTING
-        PtTester.findPrimeNumbers(BlumBlumShubGenerator.class, MillerRabin.class, 5, bitLenghts, 10, false);
-        // PtTester.findPrimeNumbers(LaggedFibbonacciGenerator.class, SolovayStrassem.class, 5, bitLenghts, false);
+        // PtTester.findPrimeNumbers(BlumBlumShubGenerator.class, MillerRabin.class, 5, bitLenghts, 5, false);
+        // PtTester.findPrimeNumbers(LaggedFibbonacciGenerator.class, SolovayStrassem.class, 5, bitLenghts, 5, false);
+        // PtTester.findPrimeNumbers(LaggedFibbonacciGenerator.class, MillerRabin.class, 5, bitLenghts, 5, false);
         // PtTester.findPrimeNumbers(BlumBlumShubGenerator.class, MillerRabin.class, 5, bitLenghts, false);
-        // PtTester.findPrimeNumbers(BlumBlumShubGenerator.class, SolovayStrassem.class, 5, bitLenghts, false);
-        // PtTester.findPrimeNumbers(ParallelBlumBlumShubGenerator.class, SolovayStrassem.class, 5, bitLenghts, false);
-        // PtTester.findPrimeNumbers(ParallelBlumBlumShubGenerator.class, MillerRabin.class, 5, bitLenghts, false);
+        // PtTester.findPrimeNumbers(BlumBlumShubGenerator.class, SolovayStrassem.class, 5, bitLenghts, 5, false);
+        // PtTester.findPrimeNumbers(ParallelBlumBlumShubGenerator.class, SolovayStrassem.class, 5, bitLenghts, 5, false);
+        // PtTester.findPrimeNumbers(ParallelBlumBlumShubGenerator.class, MillerRabin.class, 5, bitLenghts, 5, false);
 
+        // PRIMALITY TESTING FOR CONSTANTS
+        // PtTester.testForConstant(MillerRabin.class, 10, primeNumbers, 5, false);
+        PtTester.testForConstant(SolovayStrassem.class, 10, primeNumbers, 5, false);
     }
 }
 
